@@ -5,15 +5,16 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        FileReceiver fileReceiver = new FileReceiver(6000, "/home/desenvolvimento/pdvremarca/rx"); // Ajuste o caminho do diretório conforme necessário
-        fileReceiver.startServer();
-        /*try {
+        try {
             String homeDireString = System.getProperty("user.home");
-            FolderWatcher folderWatcher =
-                    new FolderWatcher(homeDireString+"/pdvremarca/tx");
-            folderWatcher.watchFolder();
+            FolderWatcher folderWatcher = new FolderWatcher(homeDireString + "/pdvremarca/tx");
+            folderWatcher.startWatching();
+
+            // Adicione um hook para parar o scheduler ao sair
+            Runtime.getRuntime().addShutdownHook(new Thread(folderWatcher::stopWatching));
+
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
