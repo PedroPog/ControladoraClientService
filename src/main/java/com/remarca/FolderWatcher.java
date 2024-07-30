@@ -83,14 +83,14 @@ public class FolderWatcher {
             os.flush();
             System.out.println("Arquivo enviado para " + serverIP + ":" + serverPort);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             if (file.delete()) {
                 System.out.println("Arquivo deletado: " + filePath);
             } else {
                 System.out.println("Falha ao deletar o arquivo: " + filePath);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
