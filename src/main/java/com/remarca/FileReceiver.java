@@ -28,6 +28,12 @@ public class FileReceiver {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
                     String fileName = reader.readLine();
 
+                    // Verifique se o nome do arquivo é válido
+                    if (fileName == null || fileName.isEmpty()) {
+                        System.err.println("Nome do arquivo inválido recebido");
+                        continue;
+                    }
+
                     // Cria um caminho completo para o arquivo
                     Path outputPath = Paths.get(outputDirectory, fileName);
 
