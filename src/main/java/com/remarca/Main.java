@@ -47,10 +47,19 @@ public class Main {
                 try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                     while (true) {
                         try (Socket clientSocket = serverSocket.accept()) {
-                            System.out.println("Server conectado: " + clientSocket.getInetAddress());
+                            String caixa = "";
+                                    System.out.println("Server conectado: " + clientSocket.getInetAddress());
                             OutputStream outputStream = clientSocket.getOutputStream();
                             PrintWriter writer = new PrintWriter(outputStream,true);
-                            writer.println("Olá, cliente! A conexão foi estabelecida com sucesso.");
+                            if (System.getProperty("os.name").toLowerCase().contains("win")){
+                                caixa = folderWatcher.sendFile("C:\\pdvremarca\\satcomm.init");
+                                writer.println(caixa);
+                            }else{
+                                String homeDirString = System.getProperty("user.home");
+                                caixa = folderWatcher.sendFile(homeDirString + "/pdvremarca/satcomm.init");
+                                writer.println(caixa);
+                            }
+
                             writer.close();
                         } catch (IOException e) {
                             System.out.println("Erro na Conexão Server: "+e.getMessage());
@@ -65,12 +74,7 @@ public class Main {
         }).start();
     }
 
-    //if (System.getProperty("os.name").toLowerCase().contains("win")){
-    //                                folderWatcher.sendFile("C:\\pdvremarca\\satcomm.init");
-    //                            }else{
-    //                                String homeDirString = System.getProperty("user.home");
-    //                                folderWatcher.sendFile(homeDirString + "/pdvremarca/satcomm.init");
-    //                            }
+
 
     private static void createSystemTrayIcon() {
         if (SystemTray.isSupported()) {

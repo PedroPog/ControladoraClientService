@@ -98,16 +98,16 @@ public class FolderWatcher {
     }
 
 
-    public void sendFile(String filePath){
+    public String sendFile(String filePath){
         File file = new File(filePath);
         if(!file.exists()||!file.isFile()){
             System.out.println("Arquivo não encontrado: "+filePath);
-            return;
+            return "";
         }
-        handleFile(filePath);
+        return handleFile(filePath);
     }
 
-    private void handleFile(String filePath) {
+    private String handleFile(String filePath) {
         String nomeValue = extractNomeValue(filePath);
         if (nomeValue != null) {
             String serverIP = null; // Substitua pelo IP desejado
@@ -118,9 +118,10 @@ public class FolderWatcher {
             }
             String finalDestination = serverIP + "-" + nomeValue;
             System.out.println("Enviando para: " + finalDestination);
-            sendDestinationToServer(finalDestination);
+            return finalDestination;
         } else {
             System.out.println("Não foi possível extrair o valor do NOME.");
+            return "";
         }
     }
 
