@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -46,12 +48,10 @@ public class Main {
                     while (true) {
                         try (Socket clientSocket = serverSocket.accept()) {
                             System.out.println("Server conectado: " + clientSocket.getInetAddress());
-                            if (System.getProperty("os.name").toLowerCase().contains("win")){
-                                folderWatcher.sendFile("C:\\pdvremarca\\satcomm.init");
-                            }else{
-                                String homeDirString = System.getProperty("user.home");
-                                folderWatcher.sendFile(homeDirString + "/pdvremarca/satcomm.init");
-                            }
+                            OutputStream outputStream = clientSocket.getOutputStream();
+                            PrintWriter writer = new PrintWriter(outputStream,true);
+                            writer.println("Olá, cliente! A conexão foi estabelecida com sucesso.");
+                            writer.close();
                         } catch (IOException e) {
                             System.out.println("Erro na Conexão Server: "+e.getMessage());
                         }
@@ -64,6 +64,13 @@ public class Main {
             }
         }).start();
     }
+
+    //if (System.getProperty("os.name").toLowerCase().contains("win")){
+    //                                folderWatcher.sendFile("C:\\pdvremarca\\satcomm.init");
+    //                            }else{
+    //                                String homeDirString = System.getProperty("user.home");
+    //                                folderWatcher.sendFile(homeDirString + "/pdvremarca/satcomm.init");
+    //                            }
 
     private static void createSystemTrayIcon() {
         if (SystemTray.isSupported()) {
