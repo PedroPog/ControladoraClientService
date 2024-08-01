@@ -2,6 +2,7 @@ package com.remarca;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.file.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,7 +44,12 @@ public class FolderWatcher {
     private void handleFile(String filePath) {
         String nomeValue = extractNomeValue(filePath);
         if (nomeValue != null) {
-            String serverIP = "192.168.10.16"; // Substitua pelo IP desejado
+            String serverIP = null; // Substitua pelo IP desejado
+            try {
+                serverIP = IpAddress.getLocalIp();
+            } catch (SocketException e) {
+                throw new RuntimeException(e);
+            }
             String finalDestination = serverIP + "/" + nomeValue;
             System.out.println("Enviando para: " + finalDestination);
             sendDestinationToServer(finalDestination);
