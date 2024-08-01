@@ -13,6 +13,10 @@ public class Main {
     private static final String ICON_PATH = "assets/logo.png"; // Substitua pelo caminho para o ícone
 
     public static void main(String[] args) {
+        PingClient.ping();
+    }
+
+    /*public static void main(String[] args) {
         if (SystemTray.isSupported()) {
             createSystemTrayIcon();
         } else {
@@ -63,7 +67,7 @@ public class Main {
                 System.out.println("Erro Geral: "+e.getMessage());
             }
         }).start();
-    }
+    }*/
 
     private static void createSystemTrayIcon() {
         if (SystemTray.isSupported()) {
