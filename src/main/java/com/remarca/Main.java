@@ -45,16 +45,22 @@ public class Main {
                 try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                     while (true) {
                         try (Socket clientSocket = serverSocket.accept()) {
-                            System.out.println("Cliente conectado: " + clientSocket.getInetAddress());
+                            System.out.println("Server conectado: " + clientSocket.getInetAddress());
+                            if (System.getProperty("os.name").toLowerCase().contains("win")){
+                                folderWatcher.sendFile("C:\\pdvremarca\\satcomm.init");
+                            }else{
+                                String homeDirString = System.getProperty("user.home");
+                                folderWatcher.sendFile(homeDirString + "/pdvremarca/satcomm.init");
+                            }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("Erro na Conexão Server: "+e.getMessage());
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Erro na tentativa de abrir porta: "+e.getMessage());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Erro Geral: "+e.getMessage());
             }
         }).start();
     }
@@ -82,7 +88,7 @@ public class Main {
             try {
                 systemTray.add(trayIcon);
             } catch (AWTException e) {
-                e.printStackTrace();
+                System.out.println("Erro na criação icon: "+e.getMessage());
             }
         }
     }

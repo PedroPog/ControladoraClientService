@@ -29,6 +29,15 @@ public class FolderWatcher {
         scheduler.shutdown();
     }
 
+    public void sendFile(String filePath){
+        File file = new File(filePath);
+        if(!file.exists()||!file.isFile()){
+            System.out.println("Arquivo não encontrado: "+filePath);
+            return;
+        }
+        sendFileToIP(filePath);
+    }
+
     private void warnBeforeCheck() {
         System.out.println("Faltam 10 segundos para a próxima verificação de arquivos.");
     }
