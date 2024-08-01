@@ -46,7 +46,7 @@ public class FolderWatcher {
             String serverIP = "192.168.10.16"; // Substitua pelo IP desejado
             String finalDestination = serverIP + "/" + nomeValue;
             System.out.println("Enviando para: " + finalDestination);
-            sendFileToIP(finalDestination);
+            sendDestinationToServer(finalDestination);
         } else {
             System.out.println("Não foi possível extrair o valor do NOME.");
         }
@@ -130,6 +130,22 @@ public class FolderWatcher {
             } else {
                 System.out.println("Falha ao deletar o arquivo: " + filePath);
             }
+        }
+    }
+
+    private void sendDestinationToServer(String destination) {
+        String serverIP = "192.168.10.16"; // Substitua pelo IP desejado
+        int serverPort = 6000; // Substitua pela porta desejada
+
+        try (Socket socket = new Socket(serverIP, serverPort);
+             OutputStream os = socket.getOutputStream();
+             PrintWriter pw = new PrintWriter(os, true)) {
+
+            pw.println(destination);  // Envia a string com o IP e o valor combinado
+            System.out.println("Destino enviado para o servidor: " + destination);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
