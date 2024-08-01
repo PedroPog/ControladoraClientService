@@ -6,6 +6,8 @@ import java.nio.file.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FolderWatcher {
     private final WatchService watchService;
@@ -35,7 +37,35 @@ public class FolderWatcher {
             System.out.println("Arquivo não encontrado: "+filePath);
             return;
         }
-        sendFileToIP(filePath);
+        handleFile(filePath);
+    }
+
+    private void handleFile(String filePath) {
+        String nomeValue = extractNomeValue(filePath);
+        if (nomeValue != null) {
+            String serverIP = "192.168.10.16"; // Substitua pelo IP desejado
+            String finalDestination = serverIP + "/" + nomeValue;
+            System.out.println("Enviando para: " + finalDestination);
+            sendFileToIP(finalDestination);
+        } else {
+            System.out.println("Não foi possível extrair o valor do NOME.");
+        }
+    }
+
+    private String extractNomeValue(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            Pattern pattern = Pattern.compile("NOME=\"[^\"]+/([^\"]+)\"");
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void warnBeforeCheck() {
