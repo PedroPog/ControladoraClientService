@@ -32,48 +32,6 @@ public class FolderWatcher {
         scheduler.shutdown();
     }
 
-    public void sendFile(String filePath){
-        File file = new File(filePath);
-        if(!file.exists()||!file.isFile()){
-            System.out.println("Arquivo não encontrado: "+filePath);
-            return;
-        }
-        handleFile(filePath);
-    }
-
-    private void handleFile(String filePath) {
-        String nomeValue = extractNomeValue(filePath);
-        if (nomeValue != null) {
-            String serverIP = null; // Substitua pelo IP desejado
-            try {
-                serverIP = IpAddress.getLocalIp();
-            } catch (SocketException e) {
-                throw new RuntimeException(e);
-            }
-            String finalDestination = serverIP + "/" + nomeValue;
-            System.out.println("Enviando para: " + finalDestination);
-            sendDestinationToServer(finalDestination);
-        } else {
-            System.out.println("Não foi possível extrair o valor do NOME.");
-        }
-    }
-
-    private String extractNomeValue(String filePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            Pattern pattern = Pattern.compile("NOME=\"[^\"]+/([^\"]+)\"");
-            while ((line = reader.readLine()) != null) {
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    return matcher.group(1);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private void warnBeforeCheck() {
         System.out.println("Faltam 10 segundos para a próxima verificação de arquivos.");
     }
@@ -137,6 +95,49 @@ public class FolderWatcher {
                 System.out.println("Falha ao deletar o arquivo: " + filePath);
             }
         }
+    }
+
+
+    public void sendFile(String filePath){
+        File file = new File(filePath);
+        if(!file.exists()||!file.isFile()){
+            System.out.println("Arquivo não encontrado: "+filePath);
+            return;
+        }
+        handleFile(filePath);
+    }
+
+    private void handleFile(String filePath) {
+        String nomeValue = extractNomeValue(filePath);
+        if (nomeValue != null) {
+            String serverIP = null; // Substitua pelo IP desejado
+            try {
+                serverIP = IpAddress.getLocalIp();
+            } catch (SocketException e) {
+                throw new RuntimeException(e);
+            }
+            String finalDestination = serverIP + "-" + nomeValue;
+            System.out.println("Enviando para: " + finalDestination);
+            sendDestinationToServer(finalDestination);
+        } else {
+            System.out.println("Não foi possível extrair o valor do NOME.");
+        }
+    }
+
+    private String extractNomeValue(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            Pattern pattern = Pattern.compile("NOME=\"[^\"]+/([^\"]+)\"");
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    return matcher.group(1);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void sendDestinationToServer(String destination) {
